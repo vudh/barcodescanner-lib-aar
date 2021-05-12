@@ -21,8 +21,11 @@ import android.content.Context;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.widget.Button;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
@@ -108,8 +111,21 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
   private Result savedResultToShow;
   private ViewfinderView viewfinderView;
   private TextView statusView;
+  private TextView statusView2;
+  private TextView leftLine1View;
+  private TextView leftLine2View;
+  private TextView rightTextView;
+  private TextView lnkCustomView;
+  private Button cancelButton;
+  private Button cancelButton2;
+  private ViewGroup pnlTop;
+  private ViewGroup bottombar;
+  private ViewGroup bottombar2;
   private Button flipButton;
+  private Button backButton;
   private Button torchButton;
+  private Button homeButton;
+  private Button finishButton;
   private View resultView;
   private Result lastResult;
   private boolean hasSurface;
@@ -125,6 +141,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
   private InactivityTimer inactivityTimer;
   private BeepManager beepManager;
   private AmbientLightManager ambientLightManager;
+
+  private static String finishText = "";
 
   ViewfinderView getViewfinderView() {
     return viewfinderView;
@@ -189,10 +207,73 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
     viewfinderView.setCameraManager(cameraManager);
 
+    bottombar = (ViewGroup) findViewById(R.id.bottombar);
+    bottombar2 = (ViewGroup) findViewById(R.id.bottombar2);
+    pnlTop = (ViewGroup) findViewById(R.id.pnlTop);
+    leftLine1View = findViewById(R.id.lblLeftLine1);
+    leftLine2View = findViewById(R.id.lblLeftLine2);
+    rightTextView = findViewById(R.id.lblTextRight);
+
+    lnkCustomView = findViewById(R.id.lnkCustom);
+
     resultView = findViewById(R.id.result_view);
     statusView = (TextView) findViewById(R.id.status_view);
+    statusView2 = (TextView) findViewById(R.id.status_view2);
+    cancelButton = (Button) findViewById(R.id.cancel_button);
+    cancelButton2 = (Button) findViewById(R.id.cancel_button2);
     flipButton = (Button) findViewById(R.id.flip_button);
+    backButton = (Button) findViewById(R.id.back_button);
     torchButton = (Button) findViewById(R.id.torch_button);
+    //homeButton = (Button) findViewById(R.id.home_button);
+    finishButton = (Button) findViewById(R.id.finish_button);
+
+    cancelButton.setOnClickListener(new Button.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        setResult(RESULT_CANCELED);
+        finish();
+      }
+    });
+
+    cancelButton2.setOnClickListener(new Button.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(getIntent().getAction());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.putExtra(Intents.Scan.RESULT, "CANCEL");
+        sendReplyMessage(R.id.return_scan_result, intent, 0);
+      }
+    });
+
+    /*homeButton.setOnClickListener(new Button.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(getIntent().getAction());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.putExtra(Intents.Scan.RESULT, "HOME");
+        sendReplyMessage(R.id.return_scan_result, intent, 0);
+      }
+    });*/
+
+    backButton.setOnClickListener(new Button.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(getIntent().getAction());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.putExtra(Intents.Scan.RESULT, "BACK");
+        sendReplyMessage(R.id.return_scan_result, intent, 0);
+      }
+    });
+
+    finishButton.setOnClickListener(new Button.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(getIntent().getAction());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.putExtra(Intents.Scan.RESULT, "FINISH");
+        sendReplyMessage(R.id.return_scan_result, intent, 0);
+      }
+    });
 
     handler = null;
     lastResult = null;
@@ -270,6 +351,81 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
           statusView.setText(customPromptMessage);
         }
 
+        String customPromptMessage2 = intent.getStringExtra(Intents.Scan.PROMPT_MESSAGE2);
+        if (customPromptMessage2 != null) {
+          statusView2.setText(customPromptMessage2);
+        }
+
+        String cancelText = intent.getStringExtra(Intents.Scan.CANCEL_TEXT);
+        if (cancelText != null) {
+          cancelButton.setText(cancelText);
+        }
+
+        String backText = intent.getStringExtra(Intents.Scan.BACK_BTN_TEXT);
+        if (backText != null) {
+          backButton.setText(backText);
+        }
+
+        String homeText = intent.getStringExtra(Intents.Scan.HOME_BTN_TEXT);
+        if (homeText != null) {
+          homeButton.setText(homeText);
+        }
+
+        finishButton.setVisibility(View.GONE);
+        finishText = intent.getStringExtra(Intents.Scan.FINISH_BTN_TEXT);
+        if (finishText != null) {
+          finishButton.setText(finishText);
+          finishButton.setVisibility(View.VISIBLE);
+        }
+
+        String line1Text = intent.getStringExtra(Intents.Scan.TOP_LEFT_LINE1_TEXT);
+        String line2Text = intent.getStringExtra(Intents.Scan.TOP_LEFT_LINE2_TEXT);
+        String rightText = intent.getStringExtra(Intents.Scan.TOP_RIGHT_TEXT);
+
+        pnlTop.setVisibility(View.INVISIBLE);
+        if (line1Text != null) {
+          pnlTop.setVisibility(View.VISIBLE);
+          pnlTop.setBackgroundColor(Color.WHITE);
+
+          leftLine1View.setText((line1Text));
+          leftLine1View.setTextColor(Color.BLACK);
+        }
+
+        if (line2Text != null) {
+          leftLine2View.setText(line2Text);
+          leftLine2View.setTextColor(Color.BLACK);
+        }
+
+        if (rightText != null) {
+          rightTextView.setText(rightText);
+          rightTextView.setTextColor(Color.BLACK);
+        }
+
+        String customText = intent.getStringExtra(Intents.Scan.CUSTOM_LINK_TEXT);
+        if (customText != null) {
+          SpannableString content = new SpannableString(customText);
+          content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+          lnkCustomView.setText(content);
+
+          lnkCustomView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              Intent intent = new Intent(getIntent().getAction());
+              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+              intent.putExtra(Intents.Scan.RESULT, "CUSTOM_LABEL");
+              sendReplyMessage(R.id.return_scan_result, intent, 0);
+            }
+          });
+        }
+
+        if(intent.getBooleanExtra(Intents.Scan.SHOW_BOTTOM_BAR, false)){
+          bottombar2.setVisibility(View.VISIBLE);
+          bottombar2.setBackgroundColor(Color.WHITE);
+          bottombar.setVisibility(View.GONE);
+        }else{
+          bottombar2.setVisibility(View.GONE);
+          bottombar.setVisibility(View.VISIBLE);
+        }
       } else if (dataString != null &&
                  dataString.contains("http://www.google") &&
                  dataString.contains("/m/products/scan")) {

@@ -116,6 +116,20 @@ public final class Intents {
      * Prompt to show on-screen when scanning by intent. Specified as a {@link String}.
      */
     public static final String PROMPT_MESSAGE = "PROMPT_MESSAGE";
+    public static final String PROMPT_MESSAGE2 = "PROMPT_MESSAGE2";
+
+    public static final String CANCEL_TEXT = "CANCEL_TEXT";
+
+    public static final String CUSTOM_LINK_TEXT = "CUSTOM_LINK_TEXT";
+
+    public static final String SHOW_BOTTOM_BAR = "SHOW_BOTTOM_BAR";
+    public static final String BACK_BTN_TEXT = "BACK_BTN_TEXT";
+    public static final String HOME_BTN_TEXT = "HOME_BTN_TEXT";
+    public static final String FINISH_BTN_TEXT = "FINISH_BTN_TEXT";
+
+    public static final String TOP_LEFT_LINE1_TEXT = "TOP_LEFT_LINE1_TEXT";
+    public static final String TOP_LEFT_LINE2_TEXT = "TOP_LEFT_LINE2_TEXT";
+    public static final String TOP_RIGHT_TEXT = "TOP_RIGHT_TEXT";
 
     /**
      * If a barcode is found, Barcodes returns {@link android.app.Activity#RESULT_OK} to
