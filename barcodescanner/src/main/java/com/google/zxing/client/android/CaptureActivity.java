@@ -371,7 +371,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
           homeButton.setText(homeText);
         }
 
-        finishButton.setVisibility(View.GONE);
+        finishButton.setVisibility(View.INVISIBLE);
         finishText = intent.getStringExtra(Intents.Scan.FINISH_BTN_TEXT);
         if (finishText != null) {
           finishButton.setText(finishText);
