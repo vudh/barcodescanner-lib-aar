@@ -359,6 +359,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         String cancelText = intent.getStringExtra(Intents.Scan.CANCEL_TEXT);
         if (cancelText != null) {
           cancelButton.setText(cancelText);
+          cancelButton2.setText(cancelText);
         }
 
         String backText = intent.getStringExtra(Intents.Scan.BACK_BTN_TEXT);

@@ -256,7 +256,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10px"
         android:background="@color/transparent"
         android:text=""
         android:textColor="@color/status_text"/>
@@ -317,8 +317,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:paddingTop="5px"
-        android:paddingRight="10px"
-        android:paddingLeft="10px"
+        android:paddingRight="20px"
+        android:paddingLeft="20px"
         android:visibility="invisible"
         android:orientation="horizontal">
 
@@ -337,7 +337,7 @@
           android:layout_height="match_parent"
           android:layout_weight = "1"
           android:text="Finish"
-          android:textSize="20dp"
+          android:drawableTop="@drawable/finish"
           android:textColor="@color/button_text"
           android:visibility="visible"/>
 
@@ -346,6 +346,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="right"
+          android:gravity="center"
           android:drawableTop="@drawable/img_cancel"
           android:textColor="@color/button_text"
           android:text="Cancel"/>
